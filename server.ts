@@ -1,11 +1,13 @@
 import { Application, Router } from "https://deno.land/x/oak@v12.6.1/mod.ts";
 import { nanoid } from "https://deno.land/x/nanoid@v3.0.0/mod.ts";
+import { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts";
 
 const app = new Application();
 const router = new Router();
 const R_URL = new RegExp(/^(http|https):\/\/[^ "]+$/);
 const kv = await Deno.openKv();
 
+app.use(oakCors());
 app.use(router.routes());
 app.use(router.allowedMethods());
 
@@ -28,7 +30,13 @@ router.post("/create", async (context) => {
 
   const id = nanoid(7);
 
-  await kv.set(["short", id], data.url);
+  const expires = new Date();
+  expires.setDate(expires.getDate() + 7);
+  const ttl = expires.getTime();
+
+  await kv.set(["short", id], data.url, {
+    expireIn: ttl,
+  });
   context.response.body = {
     url: `${request_url.origin}/${id}`,
   };
@@ -49,4 +57,3 @@ router.get("/:id", async (context) => {
 
 console.log("Server running on http://localhost:8000");
 await app.listen({ port: 8000 });
-
