@@ -1,7 +1,7 @@
 # Deno Shortner
 
 
-A simple URL shortner written in Deno. Application is using Deno KV store to store the shortned URL and redirect to the original URL.
+A simple URL shortner written in Deno. Application is using Deno KV store to store the shortned URL and redirect to the original URL. All the shortned URL will expire after 1 day.
 
 
 ## Usage

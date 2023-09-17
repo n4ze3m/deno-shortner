@@ -30,9 +30,7 @@ router.post("/create", async (context) => {
 
   const id = nanoid(7);
 
-  const expires = new Date();
-  expires.setDate(expires.getDate() + 7);
-  const ttl = expires.getTime();
+  const ttl = 60 * 60 * 24;
 
   await kv.set(["short", id], data.url, {
     expireIn: ttl,
